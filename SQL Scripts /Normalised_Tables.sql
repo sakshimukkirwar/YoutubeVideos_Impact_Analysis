@@ -75,3 +75,17 @@ CREATE TABLE video_status (
 INSERT INTO video_status
 SELECT video_id, comments_disabled, ratings_disabled, video_error_or_removed
 FROM youtube_videos_clean;
+
+
+
+ALTER TABLE VIDEO_STATISTICS ADD COLUMN VIDEO_ID_NUMERIC NUMBER;
+
+-- Step 2: Convert the existing VIDEO_ID to numeric and copy to new column
+UPDATE VIDEO_STATISTICS
+SET VIDEO_ID_NUMERIC = TRY_TO_NUMBER(VIDEO_ID);
+
+-- Step 3: Drop the old VIDEO_ID column
+ALTER TABLE VIDEO_STATISTICS DROP COLUMN VIDEO_ID;
+
+-- Step 4: Rename the new numeric column to VIDEO_ID
+ALTER TABLE VIDEO_STATISTICS RENAME COLUMN VIDEO_ID_NUMERIC TO VIDEO_ID;
